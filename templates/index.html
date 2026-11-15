@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Приложение Елка — Управление гирляндой</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <!-- Холст для падающего снега -->
+    <canvas id="snowCanvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas>
+
+    <div class="landing-container">
+        
+        <!-- БЛОК 1: БОКОВАЯ ПАНЕЛЬ ИНФО И СКАЧИВАНИЯ -->
+        <div class="left-column">
+            <div class="block sidebar-block">
+                <div class="main-info">
+                    <img src="{{ url_for('static', filename='icon.png') }}" alt="Иконка приложения Елка" class="app-main-icon">
+                    <div class="title-meta">
+                        <h1>🎄 Елка</h1>
+                        <p class="dev-tag">Разработчик: <span>ChekLab</span></p>
+                    </div>
+                </div>
+
+                <div class="cta-actions">
+                    <a href="/download" class="action-btn download-primary">Скачать APK</a>
+                    <a href="https://google.com" target="_blank" class="action-btn play-secondary">Другие приложения</a>
+                </div>
+
+                <div class="qr-box">
+                    <p>Сканируй код для перехода с телефона:</p>
+                    <img src="{{ url_for('static', filename='qr.png') }}" alt="QR Code" class="side-qr">
+                </div>
+            </div>
+        </div>
+
+        <!-- БЛОК 2: ЦЕНТРАЛЬНОЕ ОКНО (ОПИСАНИЕ И ФУНКЦИИ) -->
+        <div class="center-column">
+            <div class="block content-block">
+                <h2>О приложении</h2>
+                <p class="lead-text">Управляйте новогодним настроением прямо со своего смартфона!</p>
+                <p class="main-description">«Елка» — это интерактивное приложение, созданное на Unity для беспроводного контроля вашей гирлянды через точку доступа <em>POV_Tree_WiFi</em>.</p>
+            </div>
+
+            <div class="block content-block">
+                <h2>Боковые функции устройства</h2>
+                <ul class="premium-features">
+                    <li>
+                        <span class="feat-icon">✨</span>
+                        <div class="feat-text">
+                            <strong>Режимы анимации</strong>
+                            <p>«Неоновый саморез», «Дождь матрицы», «3D Гиперкуб», «Огненный смерч» и др.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="feat-icon">🎨</span>
+                        <div class="feat-text">
+                            <strong>Смена палитры</strong>
+                            <p>Быстрый выбор предустановленных цветовых схем для праздничного сияния.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="feat-icon">🎛</span>
+                        <div class="feat-text">
+                            <strong>Авторский цвет</strong>
+                            <p>Удобный HSV/RGB кастомизатор для точной ручной настройки каждого оттенка.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="feat-icon">💡</span>
+                        <div class="feat-text">
+                            <strong>Яркость Ёлки</strong>
+                            <p>Плавный слайдер для настройки комфортного уровня освещения в комнате.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- БЛОК 3: ПРАВАЯ ГАЛЕРЕЯ СКРИНШОТОВ -->
+        <div class="right-column">
+            <div class="block gallery-block">
+                <h2>Скриншоты</h2>
+                <div class="gallery-scroll-container">
+                    <img src="{{ url_for('static', filename='screen1.png') }}" alt="Скриншот 1" class="clickable-screenshot">
+                    <img src="{{ url_for('static', filename='screen2.png') }}" alt="Скриншот 2" class="clickable-screenshot">
+                    <img src="{{ url_for('static', filename='screen3.png') }}" alt="Скриншот 3" class="clickable-screenshot">
+                    <img src="{{ url_for('static', filename='screen4.png') }}" alt="Скриншот 4" class="clickable-screenshot">
+                    <img src="{{ url_for('static', filename='screen5.png') }}" alt="Скриншот 5" class="clickable-screenshot">
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ПРОСМОТРА СКРИНШОТОВ (КАК В GOOGLE PLAY) -->
+    <div id="photoLightbox" class="lightbox-overlay">
+        <span class="lightbox-close">&times;</span>
+        <img class="lightbox-content" id="lightboxImage">
+    </div>
+
+    <!-- Скрипты для модалки и снега -->
+    <script>
+        // 1. Полноэкранный просмотр скриншотов
+        const lightbox = document.getElementById('photoLightbox');
+        const lightboxImg = document.getElementById('lightboxImage');
+        const closeBtn = document.querySelector('.lightbox-close');
+
+        document.querySelectorAll('.clickable-screenshot').forEach(img => {
+            img.addEventListener('click', function() {
+                lightbox.classList.add('active');
+                lightboxImg.src = this.src;
+            });
+        });
+
+        closeBtn.addEventListener('click', () => lightbox.classList.remove('active'));
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) lightbox.classList.remove('active');
+        });
+
+        // 2. Скрипт падающего снега
+        const canvas = document.getElementById('snowCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const flakesCount = 80;
+        const flakes = [];
+
+        for (let i = 0; i < flakesCount; i++) {
+            flakes.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                r: Math.random() * 3 + 1.5,
+                d: Math.random() * flakesCount,
+                speed: Math.random() * 1 + 0.5
+            });
+        }
+
+        function drawSnow() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+            ctx.beginPath();
+            for (let i = 0; i < flakesCount; i++) {
+                const f = flakes[i];
+                ctx.moveTo(f.x, f.y);
+                ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2, true);
+                f.y += f.speed;
+                f.x += Math.sin(f.d) * 0.4;
+                if (f.y > canvas.height) {
+                    flakes[i] = { x: Math.random() * canvas.width, y: -10, r: f.r, d: f.d, speed: f.speed };
+                }
+            }
+            ctx.fill();
+            requestAnimationFrame(drawSnow);
+        }
+        drawSnow();
+    </script>
+
+</body>
+</html>
