@@ -5,7 +5,8 @@ import qrcode
 app = Flask(__name__)
 
 # Путь внутри сервера, куда автоматически сохранится вечный QR-код
-QR_PATH = os.path.join('static', 'qr.png')
+QR_PATH = os.path.join('static', 'new_qr.png')
+
 # Твой точный и неизменяемый адрес сайта в облаке
 SITE_URL = "https://onrender.com"
 
