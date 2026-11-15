@@ -171,14 +171,15 @@ body {
 }
 
 .side-qr {
-    max-width: 160px;
-    width: 100%;
-    height: auto;
+    width: 130px; /* Жестко задаем аккуратный маленький размер */
+    height: 130px;
     border-radius: 14px;
     border: 5px solid #fff;
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     display: block;
+    margin: 0 auto; /* Центрируем его внутри карточки */
 }
+
 
 /* ЦЕНТРАЛЬНЫЙ БЛОК И ФУНКЦИИ */
 .content-block .lead-text {
