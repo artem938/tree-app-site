@@ -170,15 +170,17 @@ body {
     line-height: 1.4;
 }
 
-.side-qr {
-    width: 130px; /* Жестко задаем аккуратный маленький размер */
-    height: 130px;
+.side-qr, .qr-code, .qr-box img {
+    width: 130px !important;
+    height: 130px !important;
+    max-width: 130px !important;
     border-radius: 14px;
     border: 5px solid #fff;
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     display: block;
-    margin: 0 auto; /* Центрируем его внутри карточки */
+    margin: 12px auto 0 auto;
 }
+
 
 
 /* ЦЕНТРАЛЬНЫЙ БЛОК И ФУНКЦИИ */
