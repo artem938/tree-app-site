@@ -8,7 +8,7 @@ app = Flask(__name__)
 APK_PATH = os.path.join('static', 'app.apk')
 
 # Ссылка на твой Google Диск, откуда скрипт сам заберет файл в фоне
-GOOGLE_DRIVE_URL = "https://google.com"
+GOOGLE_DRIVE_URL = "https://drive.google.com/file/d/1q8A1WPQsWkzN4unw93e-ZHs21ezJ7HnP/view?usp=sharing"
 
 def download_apk_from_drive():
     # Если файла еще нет на сервере Render, скачиваем его
