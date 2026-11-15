@@ -12,27 +12,41 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 40px 20px;
+    padding: 30px 15px;
     color: #fff;
     overflow-x: hidden;
 }
 
 /* Навешиваем контент поверх холста со снегом */
+.snowCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* --- ГЛАВНЫЙ АДАПТИВНЫЙ КОНТЕЙНЕР (СЕТКА) --- */
 .landing-container {
     position: relative;
     z-index: 2;
     display: grid;
+    /* На больших экранах жестко делим на 3 колонки: 300px левая, резиновый центр, 340px правая */
     grid-template-columns: 300px 1fr 340px;
     gap: 24px;
     max-width: 1350px;
     width: 100%;
     align-items: start;
+    margin: 0 auto;
 }
 
 .left-column, .center-column, .right-column {
     display: flex;
     flex-direction: column;
     gap: 24px;
+    width: 100%;
 }
 
 /* Стеклянные праздничные карточки-блоки */
@@ -44,6 +58,7 @@ body {
     padding: 24px;
     border-radius: 24px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+    width: 100%;
 }
 
 .block h2 {
@@ -58,7 +73,7 @@ body {
     text-shadow: 0 0 10px rgba(78, 217, 138, 0.3);
 }
 
-/* БОКОВАЯ ПАНЕЛЬ */
+/* ЛЕВАЯ БОКОВАЯ ПАНЕЛЬ */
 .sidebar-block {
     display: flex;
     flex-direction: column;
@@ -72,6 +87,7 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 16px;
+    width: 100%;
 }
 
 .app-main-icon {
@@ -138,17 +154,30 @@ body {
     background-color: rgba(78, 217, 138, 0.1);
 }
 
+/* БЛОК С QR-КОДОМ ДЛЯ РАЗНЫХ РАЗРЕШЕНИЙ */
+.qr-box {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 .qr-box p {
     font-size: 12px;
     color: #a3c2a3;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    line-height: 1.4;
 }
 
 .side-qr {
-    width: 130px;
-    height: 130px;
+    max-width: 160px;
+    width: 100%;
+    height: auto;
     border-radius: 14px;
     border: 5px solid #fff;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    display: block;
 }
 
 /* ЦЕНТРАЛЬНЫЙ БЛОК И ФУНКЦИИ */
@@ -201,7 +230,7 @@ body {
     line-height: 1.4;
 }
 
-/* ПРАВАЯ ГАЛЕРЕЯ */
+/* ПРАВАЯ ГАЛЕРЕЯ СКРИНШОТОВ */
 .gallery-scroll-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -278,23 +307,101 @@ body {
 
 .lightbox-close:hover { color: #4ed98a; }
 
-/* АДАПТИВНОСТЬ ПОД ЭКРАНЫ ПЛАНШЕТОВ И ТЕЛЕФОНОВ */
-@media (max-width: 1150px) {
+
+/* ==========================================================================
+   ⚡️ УМНАЯ АДАПТИВНОСТЬ ПОД РАЗНЫЕ РАЗРЕШЕНИЯ ЭКРАНОВ ⚡️
+   ========================================================================== */
+
+/* 1. Планшеты и небольшие мониторы (Ноутбуки с низким разрешением) */
+@media (max-width: 1200px) {
     .landing-container {
-        grid-template-columns: 1fr;
-        max-width: 650px;
+        /* Переключаем сетку на 2 колонки: левый сайдбар растягивается на всю ширину сверху, а центр и скриншоты делят низ */
+        grid-template-columns: 1fr 1fr;
+        max-width: 950px;
     }
-    .sidebar-block { flex-direction: row; text-align: left; justify-content: space-between; }
-    .main-info { flex-direction: row; }
-    .cta-actions { width: auto; }
-    .qr-box { display: none; }
-    .gallery-scroll-container { grid-template-columns: repeat(3, 1fr); max-height: none; }
+
+    .left-column {
+        grid-column: span 2; /* Растягиваем блок скачивания на всю ширину сверху */
+    }
+
+    .sidebar-block {
+        flex-direction: row; /* Элементы выстраиваются в горизонтальную линию */
+        text-align: left;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .main-info {
+        flex-direction: row;
+        width: auto;
+    }
+
+    .cta-actions {
+        width: 250px;
+    }
+
+    .qr-box {
+        width: auto;
+        flex-direction: row;
+        gap: 15px;
+        text-align: right;
+    }
+
+    .qr-box p {
+        max-width: 150px;
+        margin-bottom: 0;
+    }
+
+    .side-qr {
+        max-width: 90px;
+    }
 }
 
-@media (max-width: 600px) {
-    body { padding: 15px 10px; }
-    .sidebar-block { flex-direction: column; text-align: center; }
-    .main-info { flex-direction: column; }
-    .cta-actions { width: 100%; }
-    .gallery-scroll-container { grid-template-columns: repeat(2, 1fr); }
+/* 2. Мобильные телефоны и мелкие экраны */
+@media (max-width: 768px) {
+    body {
+        padding: 15px 10px;
+    }
+
+    .landing-container {
+        /* Все 3 блока выстраиваются в одну вертикальную ленту друг под другом */
+        grid-template-columns: 1fr;
+        max-width: 550px;
+        gap: 16px;
+    }
+
+    .left-column {
+        grid-column: span 1;
+    }
+
+    .sidebar-block {
+        flex-direction: column; /* На смартфонах центрируем все обратно в столбик */
+        text-align: center;
+        gap: 20px;
+    }
+
+    .main-info {
+        flex-direction: column;
+    }
+
+    .cta-actions {
+        width: 100%;
+    }
+
+    .qr-box {
+        display: none; /* Полностью скрываем блок с QR-кодом на смартфонах (ведь они уже зашли на сайт) */
+    }
+
+    .gallery-scroll-container {
+        /* Скриншоты идут парами */
+        grid-template-columns: repeat(2, 1fr);
+        max-height: none; /* Убираем внутреннюю прокрутку галереи, сайт плавно скроллится целиком */
+    }
+}
+
+/* 3. Самые узкие и старые смартфоны */
+@media (max-width: 380px) {
+    .gallery-scroll-container {
+        grid-template-columns: 1fr; /* Скриншоты выстраиваются по одному в ряд на супер-мелких телефонах */
+    }
 }
